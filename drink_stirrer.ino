@@ -2,7 +2,7 @@
 #include <Servo.h>
 #include <Stepper.h>
 
-#define MY_PROTOCOL NEC
+#define MY_PROTOCOL NEC //Defines the type of remote being used
 #define RIGHT_ARROW   0x61A0A857 //Move stepper clockwise
 #define LEFT_ARROW    0x61A06897 //Move stepper counterclockwise
 #define SELECT_BUTTON 0x61A018E7 //Stop the stepper
@@ -18,10 +18,10 @@
 #define BUTTON_8 0x61A0E01F
 #define BUTTON_9 0x61A010EF
 
-#define STEPS 32
+#define STEPS 32 //number of steps taken by the stepper motor on an input
 int Steps2Take;
 
-Stepper stepper(STEPS, 5, 4, 3, 2);
+Stepper stepper(STEPS, 5, 4, 3, 2); //pins used with ULN 2003 Motor driver, written in order IN1 IN3 IN2 IN4
 IRrecv My_Receiver(11);//Receive on pin 11
 IRdecode My_Decoder;
 Servo My_Servo;  // create servo object to control a servo
@@ -40,11 +40,11 @@ void setup()
 
 void loop()
 {
-  if (My_Receiver.GetResults(&My_Decoder)) {
+  if (My_Receiver.GetResults(&My_Decoder)) { //sets up IR reciever to read an input
     My_Decoder.decode();
     if (My_Decoder.decode_type == MY_PROTOCOL) {
       if (My_Decoder.value == 0xFFFFFFFF)
-        My_Decoder.value = Previous;
+        My_Decoder.value = Previous; //makes sure only one input is happening at a time
       switch (My_Decoder.value) {
         case LEFT_ARROW:    stepper.step(360); break;
         case RIGHT_ARROW:   stepper.step(-360); break;
